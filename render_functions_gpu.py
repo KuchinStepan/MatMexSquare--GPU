@@ -123,7 +123,7 @@ def trace_ray_full(camera, ray, rectangles, light, im_0, im_1, reflections, imag
 
 
 @cuda.jit
-def generate_light_scene(camera, light, q, q1, q2, size, rectangles, images_link, reflections, im_0, im_1, result):
+def generate_light_scene_brightness(camera, light, q, q1, q2, size, rectangles, images_link, reflections, im_0, im_1, result):
     w, h = size
     x, y = cuda.grid(2)
     if x < result.shape[0] and y < result.shape[1]:
@@ -132,7 +132,19 @@ def generate_light_scene(camera, light, q, q1, q2, size, rectangles, images_link
         pixel = add(q, add(mul(q1, k1), mul(q2, k2)))
         ray = add(pixel, mul(camera, -1))
         brightness = trace_ray_full(camera, ray, rectangles, light, im_0, im_1, reflections, images_link)
-        # result[x][y][0] = brightness
-        # result[x][y][1] = brightness
-        # result[x][y][2] = brightness
         result[x][y] = brightness
+
+
+@cuda.jit
+def generate_light_scene_rgb(camera, light, q, q1, q2, size, rectangles, images_link, reflections, im_0, im_1, result):
+    w, h = size
+    x, y = cuda.grid(2)
+    if x < result.shape[0] and y < result.shape[1]:
+        k1 = ((x + 0.5) / w)
+        k2 = ((y + 0.5) / h)
+        pixel = add(q, add(mul(q1, k1), mul(q2, k2)))
+        ray = add(pixel, mul(camera, -1))
+        brightness = trace_ray_full(camera, ray, rectangles, light, im_0, im_1, reflections, images_link)
+        result[x][y][0] = brightness
+        result[x][y][1] = brightness
+        result[x][y][2] = brightness
