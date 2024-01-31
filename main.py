@@ -1,5 +1,7 @@
+import time
+
 import numpy as np
-from squareKP_GPU import render
+from scene_render import SceneRender
 
 
 coefficient = 50
@@ -10,7 +12,9 @@ HEIGHT = 16 * coefficient
 def create_image():
     from PIL import Image
 
-    scene = render(WIDTH, HEIGHT)
+    render = SceneRender(WIDTH, HEIGHT)
+
+    scene = render.render(image_render=True)
 
     img = Image.fromarray(scene.T)
     img.show()
