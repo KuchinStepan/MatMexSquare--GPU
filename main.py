@@ -10,8 +10,7 @@ HEIGHT = 16 * coefficient
 def create_image():
     from PIL import Image
 
-    camera = np.array([-30, -30, 0])
-    scene = render(WIDTH, HEIGHT, camera)
+    scene = render(WIDTH, HEIGHT)
 
     img = Image.fromarray(scene.T)
     img.show()
