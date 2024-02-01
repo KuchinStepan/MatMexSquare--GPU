@@ -1,5 +1,5 @@
 import time
-import numpy as np
+import pygame
 from scene_render import SceneRender
 
 
@@ -17,17 +17,34 @@ def create_image():
     img.show()
 
 
+def control_movements(keys, step, angle):
+    if keys[pygame.K_d]:
+        RENDER.move_horizontal(step)
+    if keys[pygame.K_a]:
+        RENDER.move_horizontal(-step)
+    if keys[pygame.K_w]:
+        RENDER.move_straight(step)
+    if keys[pygame.K_s]:
+        RENDER.move_straight(-step)
+    if keys[pygame.K_SPACE]:
+        RENDER.move_vertical(step)
+    if keys[pygame.K_z]:
+        RENDER.move_vertical(-step)
+
+    if keys[pygame.K_f]:
+        RENDER.rotate_horizontal(angle)
+    if keys[pygame.K_g]:
+        RENDER.rotate_horizontal(-angle)
+
+
 def interactive_square():
-    import pygame
-
     running = True
-    i = 0
     t0 = time.time()
-
+    RENDER.render(False)
     print(time.time() - t0)
 
     pygame.init()
-    pygame.mixer.init()  # для звука
+
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("My Game")
     clock = pygame.time.Clock()
@@ -41,20 +58,8 @@ def interactive_square():
                 running = False
 
             keys = pygame.key.get_pressed()
+            control_movements(keys, 1, 0.01)
 
-            if keys[pygame.K_d]:
-                RENDER.move_horizontal(1)
-            if keys[pygame.K_a]:
-                RENDER.move_horizontal(-1)
-            if keys[pygame.K_w]:
-                RENDER.move_straight(1)
-            if keys[pygame.K_s]:
-                RENDER.move_straight(-1)
-            if keys[pygame.K_SPACE]:
-                RENDER.move_vertical(1)
-            if keys[pygame.K_z]:
-                RENDER.move_vertical(-1)
-        i += 1
         pygame.display.flip()
         clock.tick(15)
 

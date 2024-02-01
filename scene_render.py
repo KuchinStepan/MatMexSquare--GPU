@@ -91,6 +91,40 @@ class SceneRender:
         self.d_q = cuda.to_device(self.q)
         self.d_camera = cuda.to_device(self.camera)
 
+    def rotate_horizontal(self, angle):
+        cos = np.cos(angle)
+        sin = np.sin(angle)
+        matrix = np.array([[cos, -sin, 0], [sin, cos, 0], [0, 0, 1]])
+
+        cam_to_q = self.q - self.camera
+
+        new_vect = matrix @ cam_to_q
+
+        self.q = self.camera + new_vect
+        self.q1 = matrix @ self.q1
+        self.q2 = matrix @ self.q2
+
+        self.d_q = cuda.to_device(self.q)
+        self.d_q1 = cuda.to_device(self.q1)
+        self.d_q2 = cuda.to_device(self.q2)
+
+    def rotate_vertical(self, angle):
+        cos = np.cos(angle)
+        sin = np.sin(angle)
+        matrix = np.array([[cos, -sin, 0], [sin, cos, 0], [0, 0, 1]])
+
+        cam_to_q = self.q - self.camera
+
+        new_vect = matrix @ cam_to_q
+
+        self.q = self.camera + new_vect
+        self.q1 = matrix @ self.q1
+        self.q2 = matrix @ self.q2
+
+        self.d_q = cuda.to_device(self.q)
+        self.d_q1 = cuda.to_device(self.q1)
+        self.d_q2 = cuda.to_device(self.q2)
+
     def render(self, image_render=False):
         self._switch_mode(image_render)
 
